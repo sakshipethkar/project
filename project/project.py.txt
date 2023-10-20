@@ -1,0 +1,101 @@
+def authenticate():
+    """Authenticates to the API and returns a bearer token."""
+
+    # Set the authentication API endpoint.
+    AUTHENTICATION_API_ENDPOINT = "https://qa2.sunbasedata.com/sunbase/portal/api/assignment_auth.jsp"
+
+    # Set the authentication API credentials.
+    AUTHENTICATION_API_CREDENTIALS = {
+        "login_id": "test@sunbasedata.com",
+        "password": "Test@123"
+    }
+
+    # Make a POST request to the authentication API endpoint with the authentication API credentials.
+    response = requests.post(
+        AUTHENTICATION_API_ENDPOINT,
+        json=AUTHENTICATION_API_CREDENTIALS
+    )
+
+    # If the request is successful, the response will contain a bearer token.
+    if response.status_code == 200:
+        bearer_token = response.json()["token"]
+        return bearer_token
+    else:
+        raise Exception("Authentication failed.")
+
+def create_customer(bearer_token, customer_data):
+    """Creates a new customer."""
+
+    # Set the create customer API endpoint.
+    CREATE_CUSTOMER_API_ENDPOINT = "https://qa2.sunbasedata.com/sunbase/portal/api/assignment.jsp"
+
+    # Set the create customer API headers.
+    CREATE_CUSTOMER_API_HEADERS = {
+        "Authorization": f"Bearer {bearer_token}"
+    }
+
+    # Make a POST request to the create customer API endpoint with the create customer API body and headers.
+    response = requests.post(
+        CREATE_CUSTOMER_API_ENDPOINT,
+        json=customer_data,
+        headers=CREATE_CUSTOMER_API_HEADERS
+    )
+
+    # If the request is successful, the response will contain a status code of 201.
+    if response.status_code == 201:
+        return "Customer created successfully."
+    else:
+        raise Exception("Failed to create customer.")
+
+def get_customer_list(bearer_token):
+    """Gets a list of customers."""
+
+    # Set the get customer list API endpoint.
+    GET_CUSTOMER_LIST_API_ENDPOINT = "https://qa2.sunbasedata.com/sunbase/portal/api/assignment.jsp"
+
+    # Set the get customer list API headers.
+    GET_CUSTOMER_LIST_API_HEADERS = {
+        "Authorization": f"Bearer {bearer_token}"
+    }
+
+    # Make a GET request to the get customer list API endpoint with the get customer list API headers.
+    response = requests.get(
+        GET_CUSTOMER_LIST_API_ENDPOINT,
+        headers=GET_CUSTOMER_LIST_API_HEADERS
+    )
+
+    # If the request is successful, the response will contain a list of customers.
+    if response.status_code == 200:
+        return response.json()
+    else:
+        raise Exception("Failed to get customer list.")
+
+def delete_customer(bearer_token, customer_uuid):
+    """Deletes a customer."""
+
+    # Set the delete customer API endpoint.
+    DELETE_CUSTOMER_API_ENDPOINT = "https://qa2.sunbasedata.com/sunbase/portal/api/assignment.jsp"
+
+    # Set the delete customer API headers.
+    DELETE_CUSTOMER_API_HEADERS = {
+        "Authorization": f"Bearer {bearer_token}"
+    }
+
+    # Set the delete customer API body.
+    DELETE_CUSTOMER_API_BODY = {
+        "cmd": "delete",
+        "uuid": customer_uuid
+    }
+
+    # Make a POST request to the delete customer API endpoint with the delete customer API body and headers.
+    response = requests.post(
+        DELETE_CUSTOMER_API_ENDPOINT,
+        json=DELETE_CUSTOMER_API_BODY,
+        headers=DELETE_CUSTOMER_API_HEADERS
+    )
+
+    # If the request is successful, the response will contain a status code of 200.
+    if response.status_code == 200:
+        return "Customer deleted successfully."
+    else:
+        raise Exception("Failed to delete customer.")
